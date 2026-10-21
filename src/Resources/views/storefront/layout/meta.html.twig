@@ -1,0 +1,35 @@
+{% sw_extends '@Storefront/storefront/layout/meta.html.twig' %}
+
+{% block layout_head_javascript_tracking %}
+    {% set novaGtmId = config('NovaTagManager.config.containerId')|trim %}
+
+    {% if novaGtmId %}
+        {% set novaGtmPage = page.extensions.novaTagManager ?? null %}
+
+        {# Kunden-ID nur auf Seiten, die nie im HTTP-Cache landen – sonst könnte sie bei anderen Kunden erscheinen #}
+        {% set novaGtmUncached = activeRoute starts with 'frontend.checkout.' or activeRoute starts with 'frontend.account.' %}
+        {% set novaGtmConfig = {
+            id: novaGtmId,
+            url: config('NovaTagManager.config.gtmUrl')|default('https://www.googletagmanager.com')|trim('/', 'right'),
+            load: config('NovaTagManager.config.loadStrategy')|default('immediate'),
+            consent: config('NovaTagManager.config.consentSource')|default('shopware'),
+            remarketing: config('NovaTagManager.config.remarketing') is same as(false) ? false : true,
+            clicks: config('NovaTagManager.config.trackClicks') is same as(false) ? false : true,
+            debug: config('NovaTagManager.config.debug') ? true : false,
+            currency: context.currency.isoCode,
+            user: context.customer and novaGtmUncached ? context.customer.id : null,
+            pushes: novaGtmPage.pushes ?? [],
+            items: novaGtmPage.items ?? {},
+            list: novaGtmPage.list ?? {},
+            transactionId: novaGtmPage.transactionId ?? null
+        } %}
+
+        {# Konfiguration als JSON – json_encode maskiert „/“, damit kann kein </script> entstehen #}
+        <script id="nova-gtm-config" type="application/json">{{ novaGtmConfig|json_encode|raw }}</script>
+        <script>
+            {% sw_include '@NovaTagManager/storefront/nova-tag-manager/head.js.twig' %}
+        </script>
+    {% endif %}
+
+    {{ parent() }}
+{% endblock %}

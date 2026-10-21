@@ -1,0 +1,15 @@
+{% sw_extends '@Storefront/storefront/component/line-item/element/remove.html.twig' %}
+
+{# Artikeldaten für das Event „remove_from_cart“ (deaktiviertes Feld → wird nicht mitgesendet) #}
+{% block component_line_item_remove_redirect %}
+    {{ parent() }}
+
+    {% if lineItem.type == 'product' and config('NovaTagManager.config.containerId') %}
+        <input type="hidden" disabled data-nova-gtm-item="{{ {
+            item_id: lineItem.payload.productNumber ?? lineItem.referencedId,
+            item_name: lineItem.label,
+            price: lineItem.price.unitPrice|round(2),
+            quantity: lineItem.quantity
+        }|json_encode }}">
+    {% endif %}
+{% endblock %}

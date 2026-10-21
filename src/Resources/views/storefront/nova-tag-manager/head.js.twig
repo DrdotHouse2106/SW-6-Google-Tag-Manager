@@ -1,0 +1,103 @@
+{# Wird inline im <head> ausgegeben – muss vor allem anderen laufen (Consent-Defaults) #}
+(function (w, d) {
+    'use strict';
+
+    var cfg = JSON.parse(d.getElementById('nova-gtm-config').textContent);
+    var dl = w.dataLayer = w.dataLayer || [];
+    var log = cfg.debug ? function () { console.log.apply(console, ['[GTM]'].concat([].slice.call(arguments))); } : function () {};
+
+    function gtag() { dl.push(arguments); }
+    w.gtag = w.gtag || gtag;
+
+    function hasCookie(name) {
+        return d.cookie.split('; ').indexOf(name + '=1') !== -1;
+    }
+
+    var consent = {
+        statistics: hasCookie('nova-gtm-statistics'),
+        marketing: hasCookie('nova-gtm-marketing')
+    };
+
+    /* 1. Consent Mode v2: Standard „abgelehnt“, danach bereits erteilte Einwilligungen */
+    if (cfg.consent === 'shopware') {
+        gtag('consent', 'default', {
+            ad_storage: 'denied',
+            ad_user_data: 'denied',
+            ad_personalization: 'denied',
+            analytics_storage: 'denied',
+            functionality_storage: 'granted',
+            personalization_storage: 'denied',
+            security_storage: 'granted',
+            wait_for_update: 500
+        });
+
+        var update = {};
+        if (consent.statistics) {
+            update.analytics_storage = 'granted';
+        }
+        if (consent.marketing) {
+            update.ad_storage = update.ad_user_data = update.ad_personalization = 'granted';
+        }
+        if (Object.keys(update).length) {
+            gtag('consent', 'update', update);
+        }
+        log('Consent', consent);
+    }
+
+    /* 2. Seitendaten in den Datenlayer */
+    function push(entry) {
+        if (entry.ecommerce) {
+            dl.push({ ecommerce: null });
+        }
+        dl.push(entry);
+        log('push', entry);
+    }
+
+    push({ event: 'user', id: cfg.user });
+
+    cfg.pushes.forEach(function (entry) {
+        if (entry.google_tag_params && !cfg.remarketing) {
+            return;
+        }
+
+        /* Kauf nur einmal melden, auch wenn die Abschlussseite neu geladen wird */
+        if (entry.event === 'purchase' && cfg.transactionId) {
+            var key = 'nova-gtm-tx-' + cfg.transactionId;
+            try {
+                if (w.localStorage.getItem(key)) {
+                    log('purchase bereits gemeldet', cfg.transactionId);
+                    return;
+                }
+                w.localStorage.setItem(key, '1');
+            } catch (e) { /* Speicher gesperrt → trotzdem melden */ }
+        }
+
+        push(entry);
+    });
+
+    /* 3. Container laden */
+    var loaded = false;
+    function load() {
+        if (loaded) {
+            return;
+        }
+        loaded = true;
+        dl.push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
+        var s = d.createElement('script');
+        s.async = true;
+        s.src = cfg.url + '/gtm.js?id=' + encodeURIComponent(cfg.id);
+        d.head.appendChild(s);
+        log('Container geladen', cfg.id);
+    }
+
+    w.novaGtm = { config: cfg, push: push, load: load, consent: consent };
+
+    if (cfg.load === 'immediate') {
+        load();
+    } else if (cfg.load === 'idle') {
+        var later = function () { (w.requestIdleCallback || w.setTimeout)(load, { timeout: 2000 }); };
+        d.readyState === 'complete' ? later() : w.addEventListener('load', later);
+    } else if (consent.statistics || consent.marketing || cfg.consent === 'external') {
+        load();
+    }
+})(window, document);

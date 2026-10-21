@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/shopware/shopware/trunk/src/Core/System/SystemConfig/Schema/config.xsd">
+
+    <card>
+        <title>Google Tag Manager</title>
+        <title lang="de-DE">Google Tag Manager</title>
+
+        <input-field type="text">
+            <name>containerId</name>
+            <label>Container ID</label>
+            <label lang="de-DE">Container-ID</label>
+            <placeholder>GTM-XXXXXXX</placeholder>
+            <helpText lang="de-DE">Leer lassen, um den Tag Manager in diesem Verkaufskanal zu deaktivieren.</helpText>
+            <helpText>Leave empty to disable the tag manager for this sales channel.</helpText>
+        </input-field>
+
+        <input-field type="single-select">
+            <name>loadStrategy</name>
+            <label>When to load the container</label>
+            <label lang="de-DE">Container laden</label>
+            <defaultValue>immediate</defaultValue>
+            <options>
+                <option>
+                    <id>immediate</id>
+                    <name>Immediately (most precise data)</name>
+                    <name lang="de-DE">Sofort (genaueste Daten)</name>
+                </option>
+                <option>
+                    <id>idle</id>
+                    <name>After page load (faster page)</name>
+                    <name lang="de-DE">Nach dem Seitenaufbau (schnellere Seite)</name>
+                </option>
+                <option>
+                    <id>consent</id>
+                    <name>Only after consent</name>
+                    <name lang="de-DE">Erst nach Zustimmung</name>
+                </option>
+            </options>
+        </input-field>
+
+        <input-field type="url">
+            <name>gtmUrl</name>
+            <label>Server-side tagging URL (optional)</label>
+            <label lang="de-DE">URL für serverseitiges Tagging (optional)</label>
+            <placeholder>https://www.googletagmanager.com</placeholder>
+            <helpText lang="de-DE">Eigene Domain eines serverseitigen GTM-Containers, z. B. https://sst.meinshop.de. Leer = Google-Standard.</helpText>
+        </input-field>
+    </card>
+
+    <card>
+        <title>Consent</title>
+        <title lang="de-DE">Einwilligung (Consent Mode v2)</title>
+
+        <input-field type="single-select">
+            <name>consentSource</name>
+            <label>Consent management</label>
+            <label lang="de-DE">Einwilligung verwalten über</label>
+            <defaultValue>shopware</defaultValue>
+            <options>
+                <option>
+                    <id>shopware</id>
+                    <name>Shopware cookie banner</name>
+                    <name lang="de-DE">Shopware-Cookie-Banner</name>
+                </option>
+                <option>
+                    <id>external</id>
+                    <name>External consent tool (e.g. inside GTM)</name>
+                    <name lang="de-DE">Externes Consent-Tool (z. B. im GTM-Container)</name>
+                </option>
+            </options>
+            <helpText lang="de-DE">Bei „Shopware“ erscheinen im Cookie-Banner die Einträge „Statistik“ und „Marketing“ und steuern den Consent Mode v2.</helpText>
+        </input-field>
+    </card>
+
+    <card>
+        <title>Data layer</title>
+        <title lang="de-DE">Datenlayer</title>
+
+        <input-field type="bool">
+            <name>remarketing</name>
+            <label>Google Ads remarketing parameters (google_tag_params)</label>
+            <label lang="de-DE">Google-Ads-Remarketing-Parameter (google_tag_params)</label>
+            <defaultValue>true</defaultValue>
+        </input-field>
+
+        <input-field type="bool">
+            <name>trackClicks</name>
+            <label>Track product clicks, wishlist, cart actions</label>
+            <label lang="de-DE">Produktklicks, Merkzettel und Warenkorb-Aktionen erfassen</label>
+            <defaultValue>true</defaultValue>
+        </input-field>
+
+        <input-field type="bool">
+            <name>revenueNet</name>
+            <label>Report revenue net</label>
+            <label lang="de-DE">Umsatz beim Kauf netto übermitteln</label>
+            <defaultValue>false</defaultValue>
+            <helpText lang="de-DE">Standard ist der Bruttobetrag inkl. Versand. Steuer und Versand werden immer zusätzlich separat übertragen.</helpText>
+        </input-field>
+
+        <input-field type="bool">
+            <name>debug</name>
+            <label>Debug output in browser console</label>
+            <label lang="de-DE">Debug-Ausgabe in der Browser-Konsole</label>
+            <defaultValue>false</defaultValue>
+        </input-field>
+    </card>
+</config>

@@ -1,0 +1,15 @@
+{% sw_extends '@Storefront/storefront/base.html.twig' %}
+
+{% block base_body_skip_to_content %}
+    {% set novaGtmId = config('NovaTagManager.config.containerId')|trim %}
+
+    {# Fallback ohne JavaScript – nur sinnvoll, wenn der Container sofort geladen werden darf #}
+    {% if novaGtmId and config('NovaTagManager.config.loadStrategy')|default('immediate') == 'immediate' %}
+        <noscript>
+            <iframe src="{{ config('NovaTagManager.config.gtmUrl')|default('https://www.googletagmanager.com')|trim('/', 'right') }}/ns.html?id={{ novaGtmId|url_encode }}"
+                    height="0" width="0" style="display:none;visibility:hidden" title="Google Tag Manager"></iframe>
+        </noscript>
+    {% endif %}
+
+    {{ parent() }}
+{% endblock %}
