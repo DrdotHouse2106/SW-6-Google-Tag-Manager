@@ -5,7 +5,7 @@
     {{ parent() }}
 
     {% if lineItem.type == 'product' and config('NovaTagManager.config.containerId') %}
-        <input type="hidden" disabled data-nova-gtm-item="{{ {
+        <input type="hidden" disabled data-nova-gtm-role="remove" data-nova-gtm-item="{{ {
             item_id: lineItem.payload.productNumber ?? lineItem.referencedId,
             item_name: lineItem.label,
             price: lineItem.price.unitPrice|round(2),

@@ -1,0 +1,15 @@
+{% sw_extends '@Storefront/storefront/component/line-item/element/quantity.html.twig' %}
+
+{# Artikeldaten für Mengenänderungen (add_to_cart / remove_from_cart mit der Differenzmenge) #}
+{% block component_line_item_quantity_redirect %}
+    {{ parent() }}
+
+    {% if lineItem.type == 'product' and config('NovaTagManager.config.containerId') %}
+        <input type="hidden" disabled data-nova-gtm-role="quantity" data-nova-gtm-item="{{ {
+            item_id: lineItem.payload.productNumber ?? lineItem.referencedId,
+            item_name: lineItem.label,
+            price: lineItem.price.unitPrice|round(2),
+            quantity: lineItem.quantity
+        }|json_encode }}">
+    {% endif %}
+{% endblock %}

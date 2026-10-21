@@ -14,7 +14,7 @@ Schlanke Google-Tag-Manager-Integration für Shopware 6.7 mit **GA4-E-Commerce-D
 - Optional serverseitiges Tagging über eigene Domain
 - Kauf wird auch beim Neuladen der Abschlussseite nur **einmal** gemeldet
 - Kompatibel mit HTTP-Cache: keine personenbezogenen Daten in gecachten Seiten
-- Klein: ca. 1 KB Inline-Skript + 3,4 KB nachgeladenes JavaScript
+- Klein: ca. 1 KB Inline-Skript + 9,4 KB nachgeladenes JavaScript
 
 ## Datenlayer
 
@@ -22,11 +22,17 @@ Schlanke Google-Tag-Manager-Integration für Shopware 6.7 mit **GA4-E-Commerce-D
 |---|---|---|
 | Jede Seite | `user` | `id` (Kunden-ID nur im Checkout/Konto, sonst `null`) |
 | Startseite, Kategorie | `view_item_list` | Produkte des Listings, `item_list_id` = `category_<ID>`, `item_list_name` = `Category: <Name>` |
-| Suche | `search`, `view_item_list` | `search_term`, Treffer mit `item_list_id` = `search` |
+| Listing gefiltert / nachgeladen | `view_item_list` | Nur neu angezeigte Produkte, gleiche Liste wie oben |
+| Produkt-Slider (Erlebniswelten) | `view_item_list` | `product_slider_<n>`, `Slider: <Titel>` – nur tatsächlich sichtbare Slides |
+| Cross-Selling (Produktseite) | `view_item_list` | `cross_selling_<ID>`, `Cross-Selling: <Tab-Titel>` – je Tab, sobald er sichtbar ist |
+| Eigene Listen, z. B. „Zuletzt angesehen“, Suchfenster | `view_item_list` | `item_list_id` / `item_list_name` aus `data-nova-list-id` / `data-nova-list-name` |
+| Suche (Ergebnisseite) | `search`, `view_item_list` | `search_term`, Treffer mit `item_list_id` = `search` |
+| Suchfenster | `search` | `search_term`, `search_results` (Trefferzahl) – erst nach 1 s Tipp-Pause, je Begriff einmal pro Fensteröffnung |
 | Produktseite | `view_item` | Produkt inkl. Hersteller, Kategorie, Variante |
-| Klick auf Produkt | `select_item` | Produkt mit Listenzuordnung |
-| Merkzettel | `add_to_wishlist` | Produkt |
-| In den Warenkorb | `add_to_cart` | Produkt(e) mit Menge und Wert |
+| Klick auf Produkt (jede Liste) | `select_item` | Produkt mit Liste und Position (`index`) |
+| Merkzettel | `add_to_wishlist` | Produkt (mit Liste, falls aus einer Liste) |
+| In den Warenkorb | `add_to_cart` | Produkt(e) mit Menge, Wert und – aus Listen – Listenbezug |
+| Menge im Warenkorb erhöht / verringert | `add_to_cart` / `remove_from_cart` | Differenzmenge; schnelle Klicks auf +/− werden zusammengefasst |
 | Aus dem Warenkorb | `remove_from_cart` | Position mit Menge und Wert |
 | Warenkorb | `view_cart` | Positionen, Gesamtwert |
 | Bestellung prüfen | `begin_checkout`, `add_shipping_info`, `add_payment_info` | Positionen, Versand- und Zahlungsart |
@@ -34,9 +40,22 @@ Schlanke Google-Tag-Manager-Integration für Shopware 6.7 mit **GA4-E-Commerce-D
 | Login / Registrierung | `login`, `sign_up` | `method` |
 | Consent-Änderung | `consent_update` | – |
 
+**So werden Listen erfasst:** Jedes Element mit `data-product-information` (Shopware-Produktboxen, Karten des Suchfensters, „Zuletzt angesehen“ …) wird gemeldet, sobald es zu mindestens 50 % sichtbar ist – gebündelt (spätestens nach 1 s bzw. bei 10 Produkten) und pro Liste und Seitenaufruf nur einmal. Auch nachträglich eingefügte Inhalte werden erkannt. Doppelte Slides des Endlos-Sliders werden ignoriert.
+
 Zusätzlich auf jeder Seite: `google_tag_params` mit `ecomm_pagetype`, `ecomm_prodid`, `ecomm_category`, `ecomm_totalvalue`.
 
 Vor jedem E-Commerce-Event wird – wie von Google empfohlen – `{ ecommerce: null }` gesendet. Als Kategorie wird die **SEO-Hauptkategorie** des Produkts verwendet (im Listing ersatzweise die aktuelle Kategorie).
+
+## Schnittstelle für Theme und Suche
+
+Andere Erweiterungen (z. B. Nova Theme, Nova Suche) können eigene Produktlisten und Suchen melden, ohne den Tag Manager zu kennen:
+
+| Was | Wie |
+|---|---|
+| Eigene Produktliste | Container mit `data-nova-list-id="recently_viewed"` und `data-nova-list-name="Zuletzt angesehen"`; jedes Produkt mit `data-product-information='{"id":"…","name":"…","brand":"…","price":9.9,"sku":"…"}'` |
+| Inhalte nachgeladen | optional `document.dispatchEvent(new CustomEvent('nova:products-rendered', { detail: { container } }))` – wird zusätzlich automatisch erkannt |
+| Suche im Suchfenster | `document.dispatchEvent(new CustomEvent('nova:search', { detail: { term, total } }))` nach jeder Ergebnis-Anzeige |
+| Suchfenster geöffnet / geschlossen | `nova:search-open` / `nova:search-close` auf `document` (setzt die Doppelmeldungs-Sperre zurück bzw. sendet eine ausstehende Suche sofort) |
 
 ## Installation
 
@@ -61,7 +80,7 @@ bin/console cache:clear
 | URL für serverseitiges Tagging | Optional, z. B. `https://sst.meinshop.de` |
 | Einwilligung verwalten über | **Shopware-Cookie-Banner** oder **externes Consent-Tool** |
 | Google-Ads-Remarketing | `google_tag_params` senden |
-| Klicks & Warenkorb erfassen | `select_item`, `add_to_cart`, `remove_from_cart`, `add_to_wishlist` |
+| Klicks & Warenkorb erfassen | Produktlisten (Slider, Cross-Selling, eigene Listen), `select_item`, `add_to_cart`, `remove_from_cart` (auch Mengenänderungen), `add_to_wishlist`, `search` im Suchfenster |
 | Umsatz netto | Standard ist brutto inkl. Versand |
 | Debug | Gibt alle Datenlayer-Einträge in der Browser-Konsole aus |
 
