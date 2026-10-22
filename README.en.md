@@ -34,3 +34,14 @@ Configure it under *Extensions → My extensions → Nova Tag Manager → Config
 ## Compatibility
 
 Shopware 6.7.3 – 6.7.x (checked against 6.7.15). License: MIT.
+
+## Troubleshooting
+
+Known pitfalls from real installations. **Please add new ones** (or open an issue).
+
+- **No events in GTM preview:** set the container ID in the right sales channel.
+- **Double counting:** run only one tracking per sales channel (old GTM plugin or Shopware's own Analytics off).
+- **Visitors asked for consent again:** new consent cookies – one-time effect.
+- **No data from some visitors:** ad blockers – consider server-side tagging.
+- **Debug:** enable "Debug" to log every data layer push to the browser console.
+
