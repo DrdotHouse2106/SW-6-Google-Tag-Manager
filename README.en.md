@@ -45,3 +45,6 @@ Known pitfalls from real installations. **Please add new ones** (or open an issu
 - **No data from some visitors:** ad blockers – consider server-side tagging.
 - **Debug:** enable "Debug" to log every data layer push to the browser console.
 
+## Planned
+
+Planned features (e.g. server-side purchase reporting to GA4 via Measurement Protocol) are listed in [ROADMAP.md](ROADMAP.md) (German).

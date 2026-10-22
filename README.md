@@ -175,6 +175,10 @@ Hier sammeln wir Hürden, die bei Installation und Betrieb tatsächlich aufgetre
 
 **Lösung:** Einstellung **„Debug“** aktivieren: alle Datenlayer-Einträge erscheinen in der Browser-Konsole (F12)
 
+## Geplante Funktionen
+
+Vorgemerkte Erweiterungen (z. B. serverseitiges Nachmelden von Käufen an GA4) stehen in der [ROADMAP.md](ROADMAP.md).
+
 ## Lizenz
 
 MIT
