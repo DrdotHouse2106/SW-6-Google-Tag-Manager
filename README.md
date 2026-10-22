@@ -115,17 +115,59 @@ Shopware 6.7.3 bis 6.7.x (geprüft gegen 6.7.15).
 
 Hier sammeln wir Hürden, die bei Installation und Betrieb tatsächlich aufgetreten sind. **Neue Probleme bitte ergänzen** (oder als Issue melden), damit andere nicht lange suchen müssen.
 
-| Problem | Ursache | Lösung |
-|---|---|---|
-| Im GTM-Vorschaumodus kommen keine Events an | Container-ID fehlt im **richtigen Verkaufskanal** | *Erweiterungen → Nova Tag Manager → Konfigurieren* → oben den Verkaufskanal wählen → Container-ID eintragen |
-| Container lädt erst nach dem Cookie-Banner | Ladestrategie „Erst nach Zustimmung“ oder Consent noch nicht erteilt | Gewollt. Für den Test im Cookie-Banner „Alle akzeptieren“ wählen. Ladestrategie in der Konfiguration prüfen |
-| Seitenaufrufe/Käufe werden **doppelt** gezählt | Altes GTM-Plugin und Nova Tag Manager laufen gleichzeitig, oder Shopwares eigenes Google Analytics (*Verkaufskanal → Analytics*) ist zusätzlich aktiv, während der Container einen GA4-Tag hat | Pro Verkaufskanal nur **ein** Tracking: altes Plugin deaktivieren bzw. Shopware-Analytics abschalten |
-| Besucher werden erneut nach Cookies gefragt | Die Einwilligung wird in neuen Cookies (`nova-gtm-statistics`, `nova-gtm-marketing`) gespeichert | Einmaliger, gewollter Effekt nach der Umstellung |
-| Bei manchen Besuchern kommen gar keine Daten an | Werbeblocker blockieren `googletagmanager.com` | Optional serverseitiges Tagging über eine eigene Domain (Einstellung „URL für serverseitiges Tagging“) |
-| `purchase` fehlt beim Neuladen der Abschlussseite | Kauf wird absichtlich **nur einmal** pro Bestellung gemeldet | Gewollt (verhindert doppelte Umsätze) |
-| Kunden-ID ist auf normalen Seiten `null` | Absichtlich nur im Checkout/Kundenkonto – andere Seiten liegen im HTTP-Cache | Gewollt (Datenschutz) |
-| Mengenänderungen im Offcanvas-Warenkorb fehlen | Hängt davon ab, dass das Theme das Shopware-Standard-Mengenfeld nutzt | In der Browser-Konsole mit der Einstellung „Debug“ prüfen; bei eigenem Theme-Markup Rückmeldung als Issue |
-| Ich will sehen, was gesendet wird | – | Einstellung **„Debug“** aktivieren: alle Datenlayer-Einträge erscheinen in der Browser-Konsole (F12) |
+### Im GTM-Vorschaumodus kommen keine Events an
+
+**Ursache:** Container-ID fehlt im **richtigen Verkaufskanal**
+
+**Lösung:** *Erweiterungen → Nova Tag Manager → Konfigurieren* → oben den Verkaufskanal wählen → Container-ID eintragen
+
+### Container lädt erst nach dem Cookie-Banner
+
+**Ursache:** Ladestrategie „Erst nach Zustimmung“ oder Consent noch nicht erteilt
+
+**Lösung:** Gewollt. Für den Test im Cookie-Banner „Alle akzeptieren“ wählen. Ladestrategie in der Konfiguration prüfen
+
+### Seitenaufrufe/Käufe werden **doppelt** gezählt
+
+**Ursache:** Altes GTM-Plugin und Nova Tag Manager laufen gleichzeitig, oder Shopwares eigenes Google Analytics (*Verkaufskanal → Analytics*) ist zusätzlich aktiv, während der Container einen GA4-Tag hat
+
+**Lösung:** Pro Verkaufskanal nur **ein** Tracking: altes Plugin deaktivieren bzw. Shopware-Analytics abschalten
+
+### Besucher werden erneut nach Cookies gefragt
+
+**Ursache:** Die Einwilligung wird in neuen Cookies (`nova-gtm-statistics`, `nova-gtm-marketing`) gespeichert
+
+**Lösung:** Einmaliger, gewollter Effekt nach der Umstellung
+
+### Bei manchen Besuchern kommen gar keine Daten an
+
+**Ursache:** Werbeblocker blockieren `googletagmanager.com`
+
+**Lösung:** Optional serverseitiges Tagging über eine eigene Domain (Einstellung „URL für serverseitiges Tagging“)
+
+### `purchase` fehlt beim Neuladen der Abschlussseite
+
+**Ursache:** Kauf wird absichtlich **nur einmal** pro Bestellung gemeldet
+
+**Lösung:** Gewollt (verhindert doppelte Umsätze)
+
+### Kunden-ID ist auf normalen Seiten `null`
+
+**Ursache:** Absichtlich nur im Checkout/Kundenkonto – andere Seiten liegen im HTTP-Cache
+
+**Lösung:** Gewollt (Datenschutz)
+
+### Mengenänderungen im Offcanvas-Warenkorb fehlen
+
+**Ursache:** Hängt davon ab, dass das Theme das Shopware-Standard-Mengenfeld nutzt
+
+**Lösung:** In der Browser-Konsole mit der Einstellung „Debug“ prüfen; bei eigenem Theme-Markup Rückmeldung als Issue
+
+### Ich will sehen, was gesendet wird
+
+**Ursache:** –
+
+**Lösung:** Einstellung **„Debug“** aktivieren: alle Datenlayer-Einträge erscheinen in der Browser-Konsole (F12)
 
 ## Lizenz
 
