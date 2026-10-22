@@ -6,6 +6,7 @@ use Shopware\Core\Content\Cookie\Event\CookieGroupCollectEvent;
 use Shopware\Core\Content\Cookie\Service\CookieProvider;
 use Shopware\Core\Content\Cookie\Struct\CookieEntry;
 use Shopware\Core\Content\Cookie\Struct\CookieEntryCollection;
+use Shopware\Core\Content\Cookie\Struct\CookieGroup;
 use Shopware\Core\Content\Cookie\Struct\CookieGroupCollection;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 
@@ -40,9 +41,13 @@ class ConsentCookieListener
 
     private function addEntry(CookieGroupCollection $groups, string $groupName, string $cookie, string $label): void
     {
+        // Die Gruppe fehlt z. B., wenn andere Plugins noch den alten Cookie-Provider nutzen –
+        // dann selbst anlegen, sonst könnte die Einwilligung nie erteilt werden.
         $group = $groups->get($groupName);
         if ($group === null) {
-            return;
+            $group = new CookieGroup($groupName);
+            $group->description = $groupName . 'Description';
+            $groups->add($group);
         }
 
         $entries = $group->getEntries();

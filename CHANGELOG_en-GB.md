@@ -1,3 +1,6 @@
+# 1.0.1
+- Cookie dialog: if the "Statistics" or "Marketing" group is missing (e.g. other plugins still use the legacy cookie provider), it is created – otherwise consent could never be granted
+
 # 1.0.0
 - First release: Google Tag Manager per sales channel with GA4 e-commerce data layer
 - Consent Mode v2 via the Shopware cookie banner or an external consent tool

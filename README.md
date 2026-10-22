@@ -133,6 +133,12 @@ Hier sammeln wir Hürden, die bei Installation und Betrieb tatsächlich aufgetre
 
 **Lösung:** Pro Verkaufskanal nur **ein** Tracking: altes Plugin deaktivieren bzw. Shopware-Analytics abschalten
 
+### Google meldet trotz „Alle akzeptieren“ keine Einwilligung (`gcs=G100`, `npa=1`)
+
+**Ursache:** Die Cookies `nova-gtm-statistics`/`nova-gtm-marketing` fehlen. Bis 1.0.0 konnte das passieren, wenn im Cookie-Dialog die Gruppe „Statistik“ oder „Marketing“ fehlte (z. B. weil andere Plugins noch den alten Cookie-Provider nutzen)
+
+**Lösung:** Auf 1.0.1 aktualisieren, Cache löschen, im Browser die Cookies der Seite löschen und erneut „Alle akzeptieren“. Prüfen: F12 → Anwendung → Cookies → beide Cookies mit Wert `1`; im Tag Assistant steht dann `gcs=G111`
+
 ### Besucher werden erneut nach Cookies gefragt
 
 **Ursache:** Die Einwilligung wird in neuen Cookies (`nova-gtm-statistics`, `nova-gtm-marketing`) gespeichert
