@@ -84,6 +84,23 @@ bin/console cache:clear
 | Umsatz netto | Standard ist brutto inkl. Versand |
 | Debug | Gibt alle Datenlayer-Einträge in der Browser-Konsole aus |
 
+## GTM-Vorlage: GA4-Ereignisse für alle Shops
+
+Der Nova Tag Manager schreibt die Shop-Ereignisse in den Datenlayer – GA4 bekommt sie aber erst, wenn im GTM-Container ein GA4-Ereignis-Tag darauf reagiert. Dafür liegt eine Vorlage bei: [`vorlagen/gtm-ga4-shop-ereignisse.json`](vorlagen/gtm-ga4-shop-ereignisse.json) (Datei herunterladen: auf GitHub öffnen → „Download raw file“).
+
+Für **jeden** Container (jeder Shop hat seinen eigenen):
+
+1. Google Tag Manager → Container öffnen → **Verwaltung → Container importieren**
+2. Datei auswählen, Arbeitsbereich **„Vorhanden“** (Standard-Arbeitsbereich), Importoption **„Zusammenführen“ → „In Konflikt stehende Tags, Trigger und Variablen umbenennen“** → Bestätigen
+3. **Variablen → „Nova – GA4 Mess-ID“** öffnen und `G-XXXXXXXXXX` durch die Mess-ID dieses Shops ersetzen (steht im Google-Tag des Containers bzw. in GA4 unter *Verwaltung → Datenstreams*)
+4. Vorhandenen **Google-Ads-Conversion-Tag für den Kauf** öffnen und ergänzen: Conversion-Wert `{{ecommerce.value}}`, Transaktions-ID `{{ecommerce.transaction_id}}`, Währungscode `{{Nova – ecommerce.currency}}` (Variablen ggf. als Datenschicht-Variable anlegen, falls im Container nicht vorhanden)
+5. **In Vorschau ansehen** → Testbestellung: bei `purchase` je genau einmal „Nova – GA4 Shop-Ereignisse“ und der Kauf-Conversion-Tag
+6. **Senden** → Version benennen → Veröffentlichen
+
+Die Vorlage enthält: Trigger „Nova – GA4 Shop-Ereignisse“ (view_item, view_item_list, select_item, add_to_cart, remove_from_cart, add_to_wishlist, view_cart, begin_checkout, add_shipping_info, add_payment_info, purchase, search), Tag „Nova – GA4 Shop-Ereignisse“ (GA4-Ereignis, Ereignisname = `{{Event}}`, E-Commerce-Daten aus der Datenschicht, Parameter `search_term`) und die Variablen „Nova – GA4 Mess-ID“, „Nova – ecommerce.currency“, „Nova – search_term“.
+
+**Wichtig:** Shopwares eingebautes Google Analytics (*Verkaufskanäle → Analyse*) muss in diesen Shops **aus** sein – sonst werden Käufe und Seitenaufrufe doppelt gezählt (siehe „Häufige Probleme“).
+
 ## Umstieg von einer anderen Tag-Manager-Erweiterung
 
 Der Datenlayer folgt dem GA4-Standard. Bestehende GTM-Container, die auf die GA4-Events und `google_tag_params` reagieren, funktionieren in der Regel ohne Änderung weiter.
@@ -174,6 +191,18 @@ Hier sammeln wir Hürden, die bei Installation und Betrieb tatsächlich aufgetre
 **Ursache:** –
 
 **Lösung:** Einstellung **„Debug“** aktivieren: alle Datenlayer-Einträge erscheinen in der Browser-Konsole (F12)
+
+### Käufe werden in Google Ads doppelt oder mehrfach gezählt
+
+**Ursache:** Neben dem GTM-Container sendet Shopwares eingebautes Google Analytics (*Verkaufskanäle → Shop → Analyse*, „Google Analytics aktivieren“ / „Bestellungen verfolgen“). Dessen `gtag("event", "purchase")` landet im selben Datenlayer, und GTM-Trigger auf `purchase` springen zweimal an – einmal für den Nova-Eintrag, einmal für Shopwares. In Tag Assistant zu erkennen an zwei „purchase“-Einträgen, einer davon mit `cookie_prefix: "_swag_ga"`
+
+**Lösung:** In allen Shops mit Nova Tag Manager Shopwares Google Analytics ausschalten und GA4 über den Container senden (Vorlage siehe „GTM-Vorlage“). Im Kauf-Conversion-Tag die Transaktions-ID setzen – dann verwirft Google Ads doppelte Meldungen derselben Bestellung selbst
+
+### GA4 zeigt keine Umsätze, Google Ads aber schon
+
+**Ursache:** Im GTM-Container gibt es nur einen Google-Tag (Seitenaufrufe) und Google-Ads-Tags, aber keinen GA4-Ereignis-Tag für die Shop-Ereignisse
+
+**Lösung:** Vorlage `vorlagen/gtm-ga4-shop-ereignisse.json` importieren und die Mess-ID eintragen
 
 ## Geplante Funktionen
 
