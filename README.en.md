@@ -35,6 +35,14 @@ Configure it under *Extensions → My extensions → Nova Tag Manager → Config
 
 Shopware 6.7.3 – 6.7.x (checked against 6.7.15). License: MIT.
 
+## GTM container setup
+
+1. Turn off Shopware's built-in Google Analytics (*Sales channels → Analytics*) – otherwise purchases and page views are counted twice.
+2. Import `vorlagen/gtm-ga4-shop-ereignisse.json` (*Admin → Import container*, option **Merge → Rename conflicting**; the preview must show "0 deleted").
+3. Set the variable "Nova – GA4 Mess-ID" to the shop's GA4 measurement ID.
+4. In the Google Ads purchase conversion tag set value `ecommerce.value`, transaction ID `ecommerce.transaction_id`, currency `{{Nova – ecommerce.currency}}`.
+5. Test in preview mode (`purchase` fires each tag exactly once), then submit/publish. In Google Ads keep only the purchase as primary conversion.
+
 ## Troubleshooting
 
 Known pitfalls from real installations. **Please add new ones** (or open an issue).
