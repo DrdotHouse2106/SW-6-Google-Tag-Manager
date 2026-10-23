@@ -70,6 +70,14 @@
                 }
                 w.localStorage.setItem(key, '1');
             } catch (e) { /* Speicher gesperrt → trotzdem melden */ }
+
+            /* Erweiterte Conversions: Kundendaten zum Kauf (Google hasht sie vor dem Senden) */
+            if (cfg.userData) {
+                entry.user_data = cfg.userData;
+                if (cfg.userData.email) {
+                    entry.ecommerce.user_email = cfg.userData.email;
+                }
+            }
         }
 
         push(entry);

@@ -3,6 +3,7 @@
 namespace Nova\TagManager\Subscriber;
 
 use Nova\TagManager\Service\ItemBuilder;
+use Nova\TagManager\Service\UserDataBuilder;
 use Shopware\Core\Checkout\Cart\Cart;
 use Shopware\Core\Content\Cms\CmsPageEntity;
 use Shopware\Core\Content\Cms\SalesChannel\Struct\ProductListingStruct;
@@ -221,13 +222,22 @@ class PageDataSubscriber implements EventSubscriberInterface
             $purchase['coupon'] = implode(',', $coupons);
         }
 
+        // Erweiterte Conversions: nur wenn eingeschaltet und – beim Shopware-Cookie-Banner – mit Marketing-Einwilligung
+        $userData = null;
+        if ($this->config->getBool('NovaTagManager.config.enhancedConversions', $salesChannelId)) {
+            $external = $this->config->getString('NovaTagManager.config.consentSource', $salesChannelId) === 'external';
+            if ($external || $event->getRequest()->cookies->get('nova-gtm-marketing') === '1') {
+                $userData = UserDataBuilder::fromOrder($order) ?: null;
+            }
+        }
+
         $this->attach($page, [
             $this->remarketing('purchase', [
                 'ecomm_prodid' => array_column($items, 'item_id'),
                 'ecomm_totalvalue' => round($order->getAmountTotal(), 2),
             ]),
             $this->ecommerce('purchase', $purchase),
-        ], [], [], (string) $order->getOrderNumber());
+        ], [], [], (string) $order->getOrderNumber(), $userData);
     }
 
     private function isActive(SalesChannelContext $context): bool
@@ -333,14 +343,16 @@ class PageDataSubscriber implements EventSubscriberInterface
      * @param list<array<string, mixed>> $pushes
      * @param array<string, array<string, mixed>> $items Produkt-ID → GA4-Item (für Klick-Events im Browser)
      * @param array<string, string> $list
+     * @param array<string, mixed>|null $userData Kundendaten für erweiterte Conversions (nur Abschlussseite)
      */
-    private function attach(Page $page, array $pushes, array $items = [], array $list = [], ?string $transactionId = null): void
+    private function attach(Page $page, array $pushes, array $items = [], array $list = [], ?string $transactionId = null, ?array $userData = null): void
     {
         $page->addExtension(self::EXTENSION, new ArrayStruct([
             'pushes' => $pushes,
             'items' => $items,
             'list' => $list,
             'transactionId' => $transactionId,
+            'userData' => $userData,
         ]));
     }
 }

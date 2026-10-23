@@ -92,6 +92,14 @@
         </input-field>
 
         <input-field type="bool">
+            <name>enhancedConversions</name>
+            <label>Customer data for Google Ads enhanced conversions</label>
+            <label lang="de-DE">Kundendaten für erweiterte Conversions (Google Ads)</label>
+            <defaultValue>false</defaultValue>
+            <helpText lang="de-DE">Beim Kauf zusätzlich E-Mail, Telefon und Rechnungsadresse in den Datenlayer (user_data bzw. ecommerce.user_email) – nur mit Marketing-Einwilligung im Shopware-Cookie-Banner. Google hasht die Daten vor dem Senden. Im GTM-Kauf-Tag „Von Nutzern bereitgestellte Daten“ aktivieren. In der Datenschutzerklärung erwähnen.</helpText>
+        </input-field>
+
+        <input-field type="bool">
             <name>revenueNet</name>
             <label>Report revenue net</label>
             <label lang="de-DE">Umsatz beim Kauf netto übermitteln</label>

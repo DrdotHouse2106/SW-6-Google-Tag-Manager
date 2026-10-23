@@ -122,7 +122,7 @@ Vorhandenen **Google Ads-Conversion-Tracking-Tag für den Kauf** (Trigger auf da
 
 Gibt es die Variablen für `ecommerce.value` / `ecommerce.transaction_id` noch nicht: *Variablen → Neu → Datenschicht-Variable*, Name der Datenschicht-Variable `ecommerce.value` bzw. `ecommerce.transaction_id`, Version 2. Mit der Transaktions-ID verwirft Google Ads doppelte Meldungen derselben Bestellung selbst.
 
-„Von Nutzern bereitgestellte Daten“ (erweiterte Conversions) braucht eine E-Mail-Adresse im Datenlayer – die liefert der Nova Tag Manager derzeit nicht, das Häkchen hat also keine Wirkung.
+„Von Nutzern bereitgestellte Daten“ (erweiterte Conversions): siehe Schritt 8.
 
 ### 5. In der Vorschau testen
 
@@ -140,6 +140,21 @@ Ohne Vorschau-Modus zeigt Tag Assistant beim Container „keine Tags ausgewertet
 ### 7. In Google Ads prüfen
 
 *Ziele → Conversions*: Nur der **Kauf** sollte **primäre Aktion** sein. Warenkorb-, Kassen- oder „Warenkorb entfernt“-Conversions als **sekundäre Aktion** führen – sonst optimiert Google Ads auf Warenkörbe statt auf Käufe.
+
+### 8. Erweiterte Conversions (optional)
+
+Google Ads ordnet Käufe genauer zu, wenn beim Kauf Kundendaten mitgeschickt werden (Google hasht sie vor dem Senden).
+
+1. Shopware: *Nova Tag Manager → Konfigurieren* → **„Kundendaten für erweiterte Conversions (Google Ads)“** einschalten (je Verkaufskanal oder unter „Alle Verkaufskanäle“).
+   Beim Kauf stehen dann – **nur mit Marketing-Einwilligung** im Shopware-Cookie-Banner – im `purchase`-Ereignis:
+   - `ecommerce.user_email` – die E-Mail-Adresse
+   - `user_data` mit `email`, `phone_number` (Format `+49…`, sofern umrechenbar) und `address` (`first_name`, `last_name`, `street`, `city`, `postal_code`, `country`)
+2. GTM, nur E-Mail (schnell): im Kauf-Conversion-Tag **„Von Nutzern bereitgestellte Daten von Ihrer Website einbeziehen“** anhaken und eine Variable vom Typ „Von Nutzern bereitgestellte Daten“ wählen, deren E-Mail-Feld `{{ecommerce.user_email}}` nutzt (Datenschicht-Variable `ecommerce.user_email`).
+3. GTM, alle Daten: Vorlage [`vorlagen/gtm-erweiterte-conversions.json`](vorlagen/gtm-erweiterte-conversions.json) wie in Schritt 2 importieren (**Zusammenführen**, „0 Gelöscht“) – sie legt die Datenschicht-Variablen „Nova – E-Mail“, „Nova – Telefon“, „Nova – Vorname“ … an. Dann die Variable vom Typ „Von Nutzern bereitgestellte Daten“ öffnen → **„Manuelle Konfiguration“** → Felder E-Mail, Telefon, Vorname, Nachname, Straße, Ort, Postleitzahl, Land mit den Nova-Variablen belegen.
+4. Google Ads: *Ziele → Einstellungen → Erweiterte Conversions* aktivieren, Methode **Google Tag Manager**.
+5. In der Vorschau bei `purchase` → Reiter „Datenschicht“ prüfen, ob `user_data` da ist (nur nach „Alle akzeptieren“ im Cookie-Banner).
+
+In der **Datenschutzerklärung** erwähnen, dass bei Einwilligung in Marketing-Cookies gehashte Kundendaten zur Conversion-Messung an Google übermittelt werden.
 
 ## Umstieg von einer anderen Tag-Manager-Erweiterung
 
@@ -243,6 +258,12 @@ Hier sammeln wir Hürden, die bei Installation und Betrieb tatsächlich aufgetre
 **Ursache:** Beim Container-Import ist „Überschreiben“ gewählt
 
 **Lösung:** „Zusammenführen“ → „In Konflikt stehende … umbenennen“ wählen; die Vorschau muss „0 Gelöscht“ zeigen. Bereits bestätigt, aber nicht gesendet: *Ausstehende Änderungen → ⋮ → Änderungen verwerfen*
+
+### Erweiterte Conversions: `user_data` fehlt im Datenlayer
+
+**Ursache:** Einstellung „Kundendaten für erweiterte Conversions“ aus, oder keine Marketing-Einwilligung im Cookie-Banner (dann werden bewusst keine Kundendaten ausgegeben)
+
+**Lösung:** Einstellung im richtigen Verkaufskanal einschalten, im Test „Alle akzeptieren“ wählen. Telefon fehlt, wenn die Nummer nicht in das Format `+49…` umgerechnet werden kann (unbekanntes Land ohne Vorwahl)
 
 ### GA4 zeigt keine Umsätze, Google Ads aber schon
 

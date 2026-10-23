@@ -1,3 +1,7 @@
+# 1.1.0
+- New: customer data for Google Ads enhanced conversions on purchase (`ecommerce.user_email`, `user_data`), only with marketing consent; off by default
+- GTM templates in `vorlagen/`
+
 # 1.0.1
 - Cookie dialog: if the "Statistics" or "Marketing" group is missing (e.g. other plugins still use the legacy cookie provider), it is created – otherwise consent could never be granted
 

@@ -1,3 +1,7 @@
+# 1.1.0
+- Neu: Kundendaten für erweiterte Conversions (Google Ads) – beim Kauf `ecommerce.user_email` und `user_data` (E-Mail, Telefon im Format +49…, Rechnungsadresse), nur mit Marketing-Einwilligung; abschaltbar, Standard aus
+- GTM-Vorlagen im Ordner `vorlagen/` mit Schritt-für-Schritt-Anleitung in der README
+
 # 1.0.1
 - Cookie-Dialog: Fehlt die Gruppe „Statistik“ oder „Marketing“ (z. B. weil andere Plugins noch den alten Cookie-Provider nutzen), wird sie angelegt – sonst konnte die Einwilligung nicht erteilt werden und Google erhielt dauerhaft „abgelehnt“
 
