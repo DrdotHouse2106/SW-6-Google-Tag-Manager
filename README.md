@@ -151,8 +151,9 @@ Google Ads ordnet Käufe genauer zu, wenn beim Kauf Kundendaten mitgeschickt wer
    - `user_data` mit `email`, `phone_number` (Format `+49…`, sofern umrechenbar) und `address` (`first_name`, `last_name`, `street`, `city`, `postal_code`, `country`)
 2. GTM, nur E-Mail (schnell): im Kauf-Conversion-Tag **„Von Nutzern bereitgestellte Daten von Ihrer Website einbeziehen“** anhaken und eine Variable vom Typ „Von Nutzern bereitgestellte Daten“ wählen, deren E-Mail-Feld `{{ecommerce.user_email}}` nutzt (Datenschicht-Variable `ecommerce.user_email`).
 3. GTM, alle Daten: Vorlage [`vorlagen/gtm-erweiterte-conversions.json`](vorlagen/gtm-erweiterte-conversions.json) wie in Schritt 2 importieren (**Zusammenführen**, „0 Gelöscht“) – sie legt die Datenschicht-Variablen „Nova – E-Mail“, „Nova – Telefon“, „Nova – Vorname“ … an. Dann die Variable vom Typ „Von Nutzern bereitgestellte Daten“ öffnen → **„Manuelle Konfiguration“** → Felder E-Mail, Telefon, Vorname, Nachname, Straße, Ort, Postleitzahl, Land mit den Nova-Variablen belegen.
+   **Kein Häkchen im Kauf-Tag?** Das Häkchen „Von Nutzern bereitgestellte Daten …“ bietet GTM im Conversion-Tag nur an, wenn der Container einen **Google-Tag mit der Google-Ads-ID** (`AW-…`) enthält. Ohne ihn stattdessen einen eigenen Tag anlegen bzw. den vorhandenen nutzen: *Tag-Typ „Google Ads User-provided Data Event“*, Conversion-ID wie im Kauf-Tag, Feld „Von Nutzern bereitgestellte Daten“ = die manuelle Variable mit den Nova-Werten, Trigger = derselbe wie beim Kauf-Tag (`purchase`). Steht dort noch eine Variable im Modus **„Automatisch“**, auf die manuelle umstellen – die automatische Erkennung sucht Daten selbst auf der Seite und ist ungenauer.
 4. Google Ads: *Ziele → Einstellungen → Erweiterte Conversions* aktivieren, Methode **Google Tag Manager**.
-5. In der Vorschau bei `purchase` → Reiter „Datenschicht“ prüfen, ob `user_data` da ist (nur nach „Alle akzeptieren“ im Cookie-Banner).
+5. In der Vorschau bei `purchase` → Reiter „Datenschicht“ prüfen, ob `user_data` da ist (nur nach „Alle akzeptieren“ im Cookie-Banner). Im Treffer an Google Ads steht dann `em=tv.1~em.…~fn0.…~ln0.…` (gehasht); mit `gcs=G100` (keine Einwilligung) bewusst ohne Kundendaten.
 
 In der **Datenschutzerklärung** erwähnen, dass bei Einwilligung in Marketing-Cookies gehashte Kundendaten zur Conversion-Messung an Google übermittelt werden.
 
@@ -264,6 +265,12 @@ Hier sammeln wir Hürden, die bei Installation und Betrieb tatsächlich aufgetre
 **Ursache:** Einstellung „Kundendaten für erweiterte Conversions“ aus, oder keine Marketing-Einwilligung im Cookie-Banner (dann werden bewusst keine Kundendaten ausgegeben)
 
 **Lösung:** Einstellung im richtigen Verkaufskanal einschalten, im Test „Alle akzeptieren“ wählen. Telefon fehlt, wenn die Nummer nicht in das Format `+49…` umgerechnet werden kann (unbekanntes Land ohne Vorwahl)
+
+### Seitenaufrufe eines Shops landen in der GA4-Property eines anderen Shops
+
+**Ursache:** Der Google-Tag im GTM-Container enthält die Mess-ID (`G-…`) eines anderen Shops – z. B. nach dem Kopieren eines Containers
+
+**Lösung:** Im Google-Tag die Mess-ID der eigenen GA4-Property eintragen (GA4 → *Verwaltung → Datenstreams*), ebenso in „Nova – GA4 Mess-ID“. Für vergangene Zeiträume in GA4 nach **Hostname** filtern
 
 ### GA4 zeigt keine Umsätze, Google Ads aber schon
 
