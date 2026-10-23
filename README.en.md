@@ -51,6 +51,7 @@ Known pitfalls from real installations. **Please add new ones** (or open an issu
 - **Double counting:** run only one tracking per sales channel (old GTM plugin or Shopware's own Analytics off).
 - **Visitors asked for consent again:** new consent cookies – one-time effect.
 - **No data from some visitors:** ad blockers – consider server-side tagging.
+- **Second container from another shop on the same page:** remove the container ID under "All sales channels" when every shop has its own container, then clear the cache.
 - **Debug:** enable "Debug" to log every data layer push to the browser console.
 
 ## Planned

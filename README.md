@@ -280,6 +280,12 @@ Hier sammeln wir Hürden, die bei Installation und Betrieb tatsächlich aufgetre
 
 **Lösung:** Google-Tag mit seiner eigenen ID, „Nova – GA4 Mess-ID“ mit der Mess-ID aus *GA4 → Verwaltung → Datenstreams* (siehe Schritt 3)
 
+### Ein Shop lädt zusätzlich den Container eines anderen Shops
+
+**Ursache:** Unter „Alle Verkaufskanäle“ steht eine Container-ID, die ein Shop ohne eigene ID erbt – nach dem Eintragen der eigenen ID liefert der Seiten-Cache noch alte Seiten mit der geerbten ID aus. In Tag Assistant tauchen dann zwei `GTM-…` auf derselben Seite auf
+
+**Lösung:** Unter „Alle Verkaufskanäle“ keine Container-ID eintragen, wenn jeder Shop einen eigenen Container hat; in jedem Verkaufskanal die eigene ID prüfen und danach den Cache leeren (*Einstellungen → System → Caches & Indizes*)
+
 ### GA4 zeigt keine Umsätze, Google Ads aber schon
 
 **Ursache:** Im GTM-Container gibt es nur einen Google-Tag (Seitenaufrufe) und Google-Ads-Tags, aber keinen GA4-Ereignis-Tag für die Shop-Ereignisse
