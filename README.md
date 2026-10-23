@@ -108,7 +108,9 @@ Die Vorlage [`vorlagen/gtm-ga4-shop-ereignisse.json`](vorlagen/gtm-ga4-shop-erei
 
 ### 3. Mess-ID eintragen
 
-*Variablen* → **„Nova – GA4 Mess-ID“** → Wert `G-XXXXXXXXXX` durch die GA4-Mess-ID des Shops ersetzen (GA4 → *Verwaltung → Datenstreams*, oder die G-ID im vorhandenen Google-Tag des Containers) → Speichern. In der Container-Übersicht verschwindet danach der Platzhalter-Google-Tag „G-XXXXXXXXXX“.
+*Variablen* → **„Nova – GA4 Mess-ID“** → Wert `G-XXXXXXXXXX` durch die **Mess-ID aus dem Datenstream** ersetzen (GA4 → *Verwaltung → Datenstreams* → Web-Stream → „Mess-ID“) → Speichern. In der Container-Übersicht verschwindet danach der Platzhalter-Google-Tag „G-XXXXXXXXXX“.
+
+> **Google-Tag-ID ≠ Mess-ID:** Bei manchen Properties hat der Google-Tag eine andere ID als der Datenstream (Tag Assistant zeigt dann z. B. „G-AAAA → Ziel G-BBBB“). Dann gilt: der **Google-Tag** im Container behält seine eigene ID (G-AAAA bzw. GT-…), **„Nova – GA4 Mess-ID“** bekommt die Mess-ID des Datenstreams (G-BBBB). Mit der Google-Tag-ID im Ereignis-Tag kommen keine Shop-Ereignisse an; mit der Stream-ID im Google-Tag fehlen unter Umständen die Seitenaufrufe.
 
 ### 4. Google-Ads-Kauf-Conversion ergänzen
 
@@ -271,6 +273,12 @@ Hier sammeln wir Hürden, die bei Installation und Betrieb tatsächlich aufgetre
 **Ursache:** Der Google-Tag im GTM-Container enthält die Mess-ID (`G-…`) eines anderen Shops – z. B. nach dem Kopieren eines Containers
 
 **Lösung:** Im Google-Tag die Mess-ID der eigenen GA4-Property eintragen (GA4 → *Verwaltung → Datenstreams*), ebenso in „Nova – GA4 Mess-ID“. Für vergangene Zeiträume in GA4 nach **Hostname** filtern
+
+### Seitenaufrufe kommen an, Shop-Ereignisse (Warenkorb, Kauf) nicht – oder umgekehrt
+
+**Ursache:** Google-Tag-ID und Mess-ID des Datenstreams sind verschieden, und im Ereignis-Tag steht die Google-Tag-ID (bzw. im Google-Tag die Stream-ID)
+
+**Lösung:** Google-Tag mit seiner eigenen ID, „Nova – GA4 Mess-ID“ mit der Mess-ID aus *GA4 → Verwaltung → Datenstreams* (siehe Schritt 3)
 
 ### GA4 zeigt keine Umsätze, Google Ads aber schon
 
