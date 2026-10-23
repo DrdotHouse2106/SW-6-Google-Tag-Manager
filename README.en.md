@@ -52,6 +52,7 @@ Known pitfalls from real installations. **Please add new ones** (or open an issu
 - **Visitors asked for consent again:** new consent cookies – one-time effect.
 - **No data from some visitors:** ad blockers – consider server-side tagging.
 - **Second container from another shop on the same page:** remove the container ID under "All sales channels" when every shop has its own container, then clear the cache.
+- **Page views go to another shop's GA4 after adding the Google Ads Google tag:** the `AW-…` tag is combined with another property in Google Ads – don't load it in that container, or use a separate Ads account per shop.
 - **Debug:** enable "Debug" to log every data layer push to the browser console.
 
 ## Planned

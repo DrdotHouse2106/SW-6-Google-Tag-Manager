@@ -286,6 +286,12 @@ Hier sammeln wir Hürden, die bei Installation und Betrieb tatsächlich aufgetre
 
 **Lösung:** Unter „Alle Verkaufskanäle“ keine Container-ID eintragen, wenn jeder Shop einen eigenen Container hat; in jedem Verkaufskanal die eigene ID prüfen und danach den Cache leeren (*Einstellungen → System → Caches & Indizes*)
 
+### Nach dem Einbau des Google-Ads-Google-Tags gehen Seitenaufrufe an die GA4-Property eines anderen Shops
+
+**Ursache:** Im Google-Ads-Konto ist der Google-Tag (`AW-…`) mit der GA4-Mess-ID eines anderen Shops zu einem gemeinsamen Google-Tag zusammengefasst. Wer `AW-…` lädt, sendet automatisch auch Seitenaufrufe an diese Property – in Tag Assistant als Treffer an eine fremde `G-…`
+
+**Lösung:** Im betroffenen Container keinen Google-Tag mit dieser `AW-…` laden – für Conversions reichen „Conversion-Verknüpfung“, der Conversion-Tag und ggf. „Google Ads User-provided Data Event“. Sauberer: je Shop mit eigener Werbung ein eigenes Google-Ads-Konto (unter einem Verwaltungskonto), dann bekommt jeder Shop seinen eigenen Google-Tag
+
 ### GA4 zeigt keine Umsätze, Google Ads aber schon
 
 **Ursache:** Im GTM-Container gibt es nur einen Google-Tag (Seitenaufrufe) und Google-Ads-Tags, aber keinen GA4-Ereignis-Tag für die Shop-Ereignisse
