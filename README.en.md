@@ -22,7 +22,7 @@ Lightweight Google Tag Manager integration for Shopware 6.7 with a **GA4 e-comme
 
 ```bash
 cd <shopware-root>/custom/plugins
-git clone https://github.com/DrdotHouse2106/SW-6-Google-Tag-Manager.git NovaTagManager
+git clone https://github.com/DrdotHouse2106/SW6-Nova-Tag-Manager.git NovaTagManager
 cd <shopware-root>
 bin/console plugin:refresh
 bin/console plugin:install --activate NovaTagManager

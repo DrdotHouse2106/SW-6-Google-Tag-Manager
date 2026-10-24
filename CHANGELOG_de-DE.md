@@ -1,3 +1,7 @@
+# 1.1.1
+- Neues Plugin-Icon im Nova-Stil (Erweiterungen → Meine Erweiterungen)
+- Repository umbenannt in SW6-Nova-Tag-Manager – alte Adresse leitet weiter
+
 # 1.1.0
 - Neu: Kundendaten für erweiterte Conversions (Google Ads) – beim Kauf `ecommerce.user_email` und `user_data` (E-Mail, Telefon im Format +49…, Rechnungsadresse), nur mit Marketing-Einwilligung; abschaltbar, Standard aus
 - GTM-Vorlagen im Ordner `vorlagen/` mit Schritt-für-Schritt-Anleitung in der README

@@ -61,7 +61,7 @@ Andere Erweiterungen (z. B. Nova Theme, Nova Suche) können eigene Produktlisten
 
 ```bash
 cd <shopware-root>/custom/plugins
-git clone https://github.com/DrdotHouse2106/SW-6-Google-Tag-Manager.git NovaTagManager
+git clone https://github.com/DrdotHouse2106/SW6-Nova-Tag-Manager.git NovaTagManager
 
 cd <shopware-root>
 bin/console plugin:refresh

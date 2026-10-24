@@ -1,3 +1,7 @@
+# 1.1.1
+- New plugin icon in Nova style
+- Repository renamed to SW6-Nova-Tag-Manager
+
 # 1.1.0
 - New: customer data for Google Ads enhanced conversions on purchase (`ecommerce.user_email`, `user_data`), only with marketing consent; off by default
 - GTM templates in `vorlagen/`
